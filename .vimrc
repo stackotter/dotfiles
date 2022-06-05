@@ -125,10 +125,13 @@ nnoremap <silent> <c-h> :wincmd h<CR>
 nnoremap <silent> <c-l> :wincmd l<CR>
 
 " Cycle through completions with tab
+" If completion popup visible, go to next completion
+" If text from start of line to cursor is whitespace, insert tab
+" Otherwise, refresh completions
 inoremap <silent><expr> <TAB>
-  \ pumvisible() ? "\<C-n>" : " If completion popup visible, go to next
-  \ <SID>CheckBackspace() ? "\<TAB>" : " If line only whitespace, tab
-  \ coc#refresh() " Otherwise, refresh completions
+  \ pumvisible() ? "\<C-n>" :
+  \ <SID>CheckBackspace() ? "\<TAB>" :
+  \ coc#refresh()
 " Cycle through completions backwards with shift tab
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
@@ -152,10 +155,10 @@ if has("nvim")
   nnoremap <leader>fs <cmd>Telescope live_grep<cr>
   " Resume last search
   nnoremap <leader>fr <cmd>Telescope resume<cr>
-  
+
   " Open Package.swift and resize the NvimTree (should be run from file view)
   nnoremap <leader>w <cmd>call SetupSwiftWorkspace()<cr>
-  
+
   " Toggle file explorer
   nnoremap <C-x> :NvimTreeToggle<CR>
 endif
@@ -231,29 +234,30 @@ if has("nvim")
     },
   }
 EOF
-  
+
   " Autopairs
   lua << EOF
   local npairs = require'nvim-autopairs'
   local Rule = require'nvim-autopairs.rule'
   local ts_conds = require'nvim-autopairs.ts-conds'
-  
+
   -- Use treesitter for autopairs
   npairs.setup {
     check_ts = true
   }
 EOF
-  
+
   " File tree
   lua << EOF
   require'nvim-tree'.setup {
     view = {
       mappings = {
         list = {
-          { key = { "<SPACE>" }, action = "edit", mode = "n" },
-          { key = { "v" }, action = "vsplit" },
-          { key = { "h" }, action = "split" },
-          { key = { "<C-x>", "<C-v>" }, action = "" }
+          { key = "<SPACE>", action = "edit", mode = "n" },
+          { key = "v", action = "vsplit" },
+          { key = "h", action = "split" },
+          { key = { "<C-x>", "<C-v>" }, action = "" },
+          { key = "d", cb = ":call NvimTreeTrash()<CR>" },
         }
       }
     }
@@ -297,5 +301,30 @@ if has("nvim")
     NvimTreeToggle
     NvimTreeToggle
     wincmd l
+  endfunction
+
+  " Move a file to the trash in NvimTree
+  function! NvimTreeTrash()
+    lua << EOF
+    local lib = require('nvim-tree.lib')
+    local node = lib.get_node_at_cursor()
+    local trash_cmd = "rmtrash "
+
+    local function get_user_input_char()
+    	local c = vim.fn.getchar()
+    	return vim.fn.nr2char(c)
+    end
+
+    print("Trash "..node.name.." ? y/n")
+
+    if (get_user_input_char():match('^y') and node) then
+    	vim.fn.jobstart(trash_cmd .. node.absolute_path, {
+    		detach = true,
+    		on_exit = function (job_id, data, event) lib.refresh_tree() end,
+    	})
+    end
+
+    vim.api.nvim_command('normal :esc<CR>')
+EOF
   endfunction
 endif
