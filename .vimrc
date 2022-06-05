@@ -32,6 +32,8 @@ Plug 'godlygeek/tabular'
 Plug 'preservim/vim-markdown'
 " Automatic session saving and loading
 Plug 'wilon/vim-auto-session'
+" Faster text navigation shortcuts
+Plug 'easymotion/vim-easymotion'
 
 if has("nvim")
   " File explorer
@@ -136,14 +138,14 @@ inoremap <silent><expr> <TAB>
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 " SECTION: Nvim-only mappings
-"
+
 if has("nvim")
   " Previous diagnostic
-  nnoremap <silent> [g <Plug>(coc-diagnostic-prev)
+  nmap <silent> [g <Plug>(coc-diagnostic-prev)
   " Next diagnostic
-  nnoremap <silent> ]g <Plug>(coc-diagnostic-next)
+  nmap <silent> ]g <Plug>(coc-diagnostic-next)
   " Go to definition of symbol under cursor
-  nnoremap <silent> gd <Plug>(coc-definition)
+  nmap <silent> gd <Plug>(coc-definition)
   " Show documentation for symbol under cursor
   nnoremap <silent> K :call <SID>ShowDocumentation()<CR>
 
@@ -180,6 +182,10 @@ command! -nargs=0 Cheat :e ~/.vimcheat.md
 
 " Disable autopairs for double quotes in vimrc
 autocmd Filetype vim let b:AutoPairs = { "(": ")", "{": "}", "[": "]", "'": "'" }
+
+" Stop easy-motion messing with coc
+autocmd User EasyMotionPromptBegin silent! CocDisable
+autocmd User EasyMotionPromptEnd silent! CocEnable
 
 " Change line number style depending on mode
 augroup numbertoggle
