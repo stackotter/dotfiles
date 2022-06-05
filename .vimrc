@@ -109,21 +109,11 @@ vmap <c-c> <esc>
 omap <c-c> <esc>
 tnoremap <c-c> <C-\><C-n>
 
-" Previous diagnostic
-nnoremap <silent> [g <Plug>(coc-diagnostic-prev)
-" Next diagnostic
-nnoremap <silent> ]g <Plug>(coc-diagnostic-next)
-" Go to definition of symbol under cursor
-nnoremap <silent> gd <Plug>(coc-definition)
-" Show documentation for symbol under cursor
-nnoremap <silent> K :call <SID>ShowDocumentation()<CR>
 " Go back one navigation step
 nnoremap <silent> gb <C-o>
 
 " Clear highlights
 nnoremap <leader>u :nohl<CR>
-" Open Package.swift and resize the NvimTree (should be run from file view)
-nnoremap <leader>w <cmd>call SetupSwiftWorkspace()<cr>
 
 " Go one pane up
 nnoremap <silent> <c-k> :wincmd k<CR>
@@ -134,18 +124,6 @@ nnoremap <silent> <c-h> :wincmd h<CR>
 " Go one pane right
 nnoremap <silent> <c-l> :wincmd l<CR>
 
-" Toggle file explorer
-nnoremap <C-x> :NvimTreeToggle<CR>
-
-" Find files
-nnoremap <leader>ff <cmd>Telescope git_files<cr>
-" Find help tags
-nnoremap <leader>fh <cmd>Telescope help_tags<cr>
-" Grep project
-nnoremap <leader>fs <cmd>Telescope live_grep<cr>
-" Resume last search
-nnoremap <leader>fr <cmd>Telescope resume<cr>
-
 " Cycle through completions with tab
 inoremap <silent><expr> <TAB>
   \ pumvisible() ? "\<C-n>" : " If completion popup visible, go to next
@@ -153,6 +131,34 @@ inoremap <silent><expr> <TAB>
   \ coc#refresh() " Otherwise, refresh completions
 " Cycle through completions backwards with shift tab
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" SECTION: Nvim-only mappings
+"
+if has("nvim")
+  " Previous diagnostic
+  nnoremap <silent> [g <Plug>(coc-diagnostic-prev)
+  " Next diagnostic
+  nnoremap <silent> ]g <Plug>(coc-diagnostic-next)
+  " Go to definition of symbol under cursor
+  nnoremap <silent> gd <Plug>(coc-definition)
+  " Show documentation for symbol under cursor
+  nnoremap <silent> K :call <SID>ShowDocumentation()<CR>
+
+  " Find files
+  nnoremap <leader>ff <cmd>Telescope git_files<cr>
+  " Find help tags
+  nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+  " Grep project
+  nnoremap <leader>fs <cmd>Telescope live_grep<cr>
+  " Resume last search
+  nnoremap <leader>fr <cmd>Telescope resume<cr>
+  
+  " Open Package.swift and resize the NvimTree (should be run from file view)
+  nnoremap <leader>w <cmd>call SetupSwiftWorkspace()<cr>
+  
+  " Toggle file explorer
+  nnoremap <C-x> :NvimTreeToggle<CR>
+endif
 
 " SECTION: Commands
 
@@ -169,9 +175,6 @@ command! -nargs=0 Cheat :e ~/.vimcheat.md
 
 " SECTION: Autocommands
 
-" Update status line on relative coc updates
-autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
-
 " Disable autopairs for double quotes in vimrc
 autocmd Filetype vim let b:AutoPairs = { "(": ")", "{": "}", "[": "]", "'": "'" }
 
@@ -184,9 +187,13 @@ augroup numbertoggle
   autocmd BufLeave,FocusLost,InsertEnter,WinLeave   * if &number                  | set norelativenumber | endif
 augroup END
 
-" Highlight the symbol and its references when holding the cursor
+" SECTION: Nvim-only autocommands
+
 if has("nvim")
+  " Highlight the symbol and its references when holding the cursor
   autocmd CursorHold * silent call CocActionAsync('highlight')
+  " Update status line on relative coc updates
+  autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
 endif
 
 " SECTION: Plugin configuration
@@ -211,44 +218,48 @@ let g:lightline = {
   \ },
   \ }
 
-" Tree sitter
-lua << EOF
-require'nvim-treesitter.configs'.setup {
-  -- ensure_installed = { "swift", "rust" },
-  highlight = {
-    enable = true,
-    additional_vim_regex_highlighting = false,
-  },
-}
+" SECTION: Nvim-only plugin configuration
+
+if has("nvim")
+  " Tree sitter
+  lua << EOF
+  require'nvim-treesitter.configs'.setup {
+    -- ensure_installed = { "swift", "rust" },
+    highlight = {
+      enable = true,
+      additional_vim_regex_highlighting = false,
+    },
+  }
 EOF
-
-" Autopairs
-lua << EOF
-local npairs = require'nvim-autopairs'
-local Rule = require'nvim-autopairs.rule'
-local ts_conds = require'nvim-autopairs.ts-conds'
-
--- Use treesitter for autopairs
-npairs.setup {
-  check_ts = true
-}
+  
+  " Autopairs
+  lua << EOF
+  local npairs = require'nvim-autopairs'
+  local Rule = require'nvim-autopairs.rule'
+  local ts_conds = require'nvim-autopairs.ts-conds'
+  
+  -- Use treesitter for autopairs
+  npairs.setup {
+    check_ts = true
+  }
 EOF
-
-" File tree
-lua << EOF
-require'nvim-tree'.setup {
-  view = {
-    mappings = {
-      list = {
-        { key = { "<SPACE>" }, action = "edit", mode = "n" },
-        { key = { "v" }, action = "vsplit" },
-        { key = { "h" }, action = "split" },
-        { key = { "<C-x>", "<C-v>" }, action = "" }
+  
+  " File tree
+  lua << EOF
+  require'nvim-tree'.setup {
+    view = {
+      mappings = {
+        list = {
+          { key = { "<SPACE>" }, action = "edit", mode = "n" },
+          { key = { "v" }, action = "vsplit" },
+          { key = { "h" }, action = "split" },
+          { key = { "<C-x>", "<C-v>" }, action = "" }
+        }
       }
     }
   }
-}
 EOF
+endif
 
 " SECTION: Functions
 
@@ -258,14 +269,6 @@ function! SetTab(n)
     let &l:softtabstop=a:n
     let &l:shiftwidth=a:n
     set expandtab
-endfunction
-
-" Setup Swift package workspace how I like it
-function! SetupSwiftWorkspace()
-  e Package.swift
-  NvimTreeToggle
-  NvimTreeToggle
-  wincmd l
 endfunction
 
 " Show documentation for symbol under cursor
@@ -284,3 +287,15 @@ function! s:CheckBackspace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
+
+" SECTION: Nvim-only functions
+
+if has("nvim")
+  " Setup Swift package workspace how I like it
+  function! SetupSwiftWorkspace()
+    e Package.swift
+    NvimTreeToggle
+    NvimTreeToggle
+    wincmd l
+  endfunction
+endif
