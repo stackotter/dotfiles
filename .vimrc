@@ -32,8 +32,6 @@ Plug 'godlygeek/tabular'
 Plug 'preservim/vim-markdown'
 " Automatic session saving and loading
 Plug 'wilon/vim-auto-session'
-" Faster text navigation shortcuts
-Plug 'easymotion/vim-easymotion'
 
 if has("nvim")
   " File explorer
@@ -46,6 +44,8 @@ if has("nvim")
   Plug 'nvim-telescope/telescope.nvim'
   " Advanced syntax highlighting
   Plug 'nvim-treesitter/nvim-treesitter'
+  " Easier text navigation
+  Plug 'phaazon/hop.nvim'
 endif
 
 call plug#end()
@@ -141,11 +141,11 @@ inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 if has("nvim")
   " Previous diagnostic
-  nmap <silent> [g <Plug>(coc-diagnostic-prev)
+  nnoremap <silent> [g <Plug>(coc-diagnostic-prev)
   " Next diagnostic
-  nmap <silent> ]g <Plug>(coc-diagnostic-next)
+  nnoremap <silent> ]g <Plug>(coc-diagnostic-next)
   " Go to definition of symbol under cursor
-  nmap <silent> gd <Plug>(coc-definition)
+  nnoremap <silent> gd <Plug>(coc-definition)
   " Show documentation for symbol under cursor
   nnoremap <silent> K :call <SID>ShowDocumentation()<CR>
 
@@ -159,10 +159,19 @@ if has("nvim")
   nnoremap <leader>fr <cmd>Telescope resume<cr>
 
   " Open Package.swift and resize the NvimTree (should be run from file view)
-  nnoremap <leader>w <cmd>call SetupSwiftWorkspace()<cr>
+  nnoremap <C-s> <cmd>call SetupSwiftWorkspace()<cr>
 
   " Toggle file explorer
   nnoremap <C-x> :NvimTreeToggle<CR>
+
+  " Hop to word
+  nnoremap <leader>w :HopWord<CR>
+  " Hop to occurence of character
+  nnoremap <leader>c :HopChar1<CR>
+  " Hop to first non-whitespace character of line
+  nnoremap <leader>l :HopLineStart<CR>
+  " Hop to pattern matches
+  nnoremap <leader>/ :HopPattern<CR>
 endif
 
 " SECTION: Commands
@@ -182,10 +191,6 @@ command! -nargs=0 Cheat :e ~/.vimcheat.md
 
 " Disable autopairs for double quotes in vimrc
 autocmd Filetype vim let b:AutoPairs = { "(": ")", "{": "}", "[": "]", "'": "'" }
-
-" Stop easy-motion messing with coc
-autocmd User EasyMotionPromptBegin silent! CocDisable
-autocmd User EasyMotionPromptEnd silent! CocEnable
 
 " Change line number style depending on mode
 augroup numbertoggle
@@ -230,6 +235,9 @@ let g:lightline = {
 " SECTION: Nvim-only plugin configuration
 
 if has("nvim")
+  " Hop
+  lua require'hop'.setup()
+
   " Tree sitter
   lua << EOF
   require'nvim-treesitter.configs'.setup {
