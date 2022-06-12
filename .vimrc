@@ -56,8 +56,6 @@ call plug#end()
 colorscheme palenight
 " Syntax highlighting
 syntax on
-" Enable syntax concealing (mainly for markdown)
-set conceallevel=2
 " Autowrap comments at 100 characters
 set formatoptions-=t
 set formatoptions+=cr
@@ -88,10 +86,11 @@ set shortmess+=c
 set updatetime=300
 " Always draw sign column
 set signcolumn=yes
-
 " Line numbers
 set ruler
 set number
+" Additional session saving options
+set sessionoptions+=terminal,folds,blank,help,winsize,localoptions,tabpages
 
 " Add coc statusline
 if has("nvim")
@@ -109,7 +108,7 @@ nmap <c-c> <esc>
 imap <c-c> <esc>
 vmap <c-c> <esc>
 omap <c-c> <esc>
-tnoremap <c-c> <C-\><C-n>
+tnoremap <esc> <C-\><C-n>
 
 " Go back one navigation step
 nnoremap <silent> gb <C-o>
@@ -119,12 +118,20 @@ nnoremap <leader>u :nohl<CR>
 
 " Go one pane up
 nnoremap <silent> <c-k> :wincmd k<CR>
+inoremap <silent> <c-k> <esc>:wincmd k<CR>
+tmap <silent> <c-k> <esc>:wincmd k<CR>
 " Go one pane down
 nnoremap <silent> <c-j> :wincmd j<CR>
+inoremap <silent> <c-j> <esc>:wincmd j<CR>
+tmap <silent> <c-j> <esc>:wincmd j<CR>
 " Go one pane left
 nnoremap <silent> <c-h> :wincmd h<CR>
+inoremap <silent> <c-h> <esc>:wincmd h<CR>
+tmap <silent> <c-h> <esc>:wincmd h<CR>
 " Go one pane right
 nnoremap <silent> <c-l> :wincmd l<CR>
+inoremap <silent> <c-l> <esc>:wincmd l<CR>
+tmap <silent> <c-l> <esc>:wincmd l<CR>
 
 " Cycle through completions with tab
 " If completion popup visible, go to next completion
@@ -147,7 +154,7 @@ if has("nvim")
   " Go to definition of symbol under cursor
   nnoremap <silent> gd <Plug>(coc-definition)
   " Show documentation for symbol under cursor
-  nnoremap <silent> K :call <SID>ShowDocumentation()<CR>
+  nnoremap <silent> K <cmd>call <SID>ShowDocumentation()<CR>
 
   " Find files
   nnoremap <leader>ff <cmd>Telescope git_files<cr>
@@ -162,16 +169,19 @@ if has("nvim")
   nnoremap <C-s> <cmd>call SetupSwiftWorkspace()<cr>
 
   " Toggle file explorer
-  nnoremap <C-x> :NvimTreeToggle<CR>
+  nnoremap <C-x> <cmd>NvimTreeToggle<CR>
 
   " Hop to word
-  nnoremap <leader>w :HopWord<CR>
+  nnoremap <leader>w <cmd>HopWord<CR>
   " Hop to occurence of character
-  nnoremap <leader>c :HopChar1<CR>
+  nnoremap <leader>c <cmd>HopChar1<CR>
   " Hop to first non-whitespace character of line
-  nnoremap <leader>l :HopLineStart<CR>
+  nnoremap <leader>l <cmd>HopLineStart<CR>
   " Hop to pattern matches
-  nnoremap <leader>/ :HopPattern<CR>
+  nnoremap <leader>/ <cmd>HopPattern<CR>
+
+  " Open a terminal
+  nnoremap <leader>t <cmd>call OpenTerminal()<cr>
 endif
 
 " SECTION: Commands
@@ -186,6 +196,12 @@ command! -nargs=0 Config :e ~/.vimrc
 command! -nargs=0 Source :source ~/.vimrc
 " Open personal cheatsheet
 command! -nargs=0 Cheat :e ~/.vimcheat.md
+" Open project ideas
+command! -nargs=0 ProjIdeas :e ~/Desktop/Projects/Ideas.md
+" Useful resources
+command! -nargs=0 Resources :e ~/Desktop/Projects/Resources.md
+" Hacking
+command! -nargs=0 Hacking :e ~/Desktop/Projects/Hacking.md
 
 " SECTION: Autocommands
 
@@ -208,6 +224,10 @@ if has("nvim")
   autocmd CursorHold * silent call CocActionAsync('highlight')
   " Update status line on relative coc updates
   autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
+  " Always enter terminal windows in insert mode
+  autocmd BufWinEnter,WinEnter term://* startinsert
+  " Disable line numbers and set height of terminal to 10 on open
+  autocmd TermOpen * call SetupTerminal()
 endif
 
 " SECTION: Plugin configuration
@@ -265,9 +285,9 @@ EOF
   lua << EOF
   require'nvim-tree'.setup {
     view = {
+      preserve_window_proportions = true,
       mappings = {
         list = {
-          { key = "<SPACE>", action = "edit", mode = "n" },
           { key = "v", action = "vsplit" },
           { key = "h", action = "split" },
           { key = { "<C-x>", "<C-v>" }, action = "" },
@@ -340,5 +360,18 @@ if has("nvim")
 
     vim.api.nvim_command('normal :esc<CR>')
 EOF
+  endfunction
+
+  function! OpenTerminal()
+    split
+    wincmd j
+    terminal
+    call SetupTerminal()
+    startinsert
+  endfunction
+
+  function! SetupTerminal()
+    setlocal nonumber norelativenumber
+    exe 10 "wincmd _"
   endfunction
 endif
