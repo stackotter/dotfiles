@@ -51,3 +51,7 @@ source /usr/local/bin/virtualenvwrapper.sh
 
 # thefuck
 eval $(thefuck --alias)
+
+# docker helpers
+alias docker_rm_stopped='docker rm $(docker ps --filter status=exited -q)'
+alias docker_latest='LATEST_ID=$(docker ps -a | head -n 2 | tail -n 1 | cut -c1-12); docker start $LATEST_ID; docker exec -it $LATEST_ID /bin/bash'
