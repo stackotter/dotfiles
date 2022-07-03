@@ -32,6 +32,8 @@ Plug 'godlygeek/tabular'
 Plug 'preservim/vim-markdown'
 " Automatic session saving and loading
 Plug 'wilon/vim-auto-session'
+" Metal syntax highlighting
+Plug 'tklebanoff/metal-vim'
 
 if has("nvim")
   " File explorer
@@ -182,6 +184,12 @@ if has("nvim")
 
   " Open a terminal
   nnoremap <leader>t <cmd>call OpenTerminal()<cr>
+
+  " Restart coc
+  nnoremap <leader>r <cmd>CocRestart<cr><cr>
+
+  " Reformat paragraph or comment
+  vnoremap <leader>f <cmd>join<cr>gvgq
 endif
 
 " SECTION: Commands
@@ -207,6 +215,8 @@ command! -nargs=0 Hacking :e ~/Desktop/Projects/Hacking.md
 
 " Disable autopairs for double quotes in vimrc
 autocmd Filetype vim let b:AutoPairs = { "(": ")", "{": "}", "[": "]", "'": "'" }
+" Metal filetype
+autocmd BufNewFile,BufRead *.metal set ft=metal
 
 " Change line number style depending on mode
 augroup numbertoggle
