@@ -97,6 +97,8 @@ set sessionoptions+=terminal,folds,blank,help,winsize,localoptions,tabpages
 " Add coc statusline
 if has("nvim")
   set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+  " Fix bad completion menu fg colour"
+  hi CocMenuSel ctermfg=237
 endif
 
 " SECTION: Mappings
