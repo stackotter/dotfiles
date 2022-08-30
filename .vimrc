@@ -149,7 +149,7 @@ tmap <silent> <c-l> <esc>:wincmd l<CR>
 
 if has("nvim")
   " Confirm completion
-  inoremap <expr> <cr> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
+  inoremap <expr> <cr> coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
   " Next completion or trigger completion
   function! CheckBackspace() abort
