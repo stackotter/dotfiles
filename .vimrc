@@ -34,6 +34,14 @@ Plug 'preservim/vim-markdown'
 Plug 'wilon/vim-auto-session'
 " Metal syntax highlighting
 Plug 'tklebanoff/metal-vim'
+" HTML snippets and shortcuts
+Plug 'mattn/emmet-vim'
+" Dep for vim-svelte
+Plug 'othree/html5.vim'
+" Dep for vim-svelte
+Plug 'pangloss/vim-javascript'
+" Svelte syntax highlighting and indentation support
+Plug 'evanleck/vim-svelte', {'branch': 'main'}
 
 if has("nvim")
   " File explorer
@@ -194,10 +202,15 @@ if has("nvim")
   nnoremap <leader>t <cmd>call OpenTerminal()<cr>
 
   " Restart coc
-  nnoremap <leader>r <cmd>CocRestart<cr><cr>
-
-  " Reformat paragraph or comment
-  vnoremap <leader>f <cmd>join<cr>gvgq
+  nnoremap <leader>rs <cmd>CocRestart<cr><cr>
+  " Coc action
+  nnoremap <leader>ac <cmd>CocAction<cr>
+  " Coc fix
+  nnoremap <leader>fi <cmd>CocFix<cr>
+  " Coc rename
+  nnoremap <leader>rn <Plug>(coc-rename)
+  " Coc format
+  nnoremap <leader>fo <Plug>(coc-format)
 endif
 
 " SECTION: Commands
@@ -211,13 +224,13 @@ command! -nargs=0 Config :e ~/.vimrc
 " Reload config file
 command! -nargs=0 Source :source ~/.vimrc
 " Open personal cheatsheet
-command! -nargs=0 Cheat :e ~/.vimcheat.md
+command! -nargs=0 Cheat :e ~/Desktop/Projects/Notes/VimCheat.md
 " Open project ideas
-command! -nargs=0 ProjIdeas :e ~/Desktop/Projects/Ideas.md
+command! -nargs=0 ProjIdeas :e ~/Desktop/Projects/Notes/Ideas.md
 " Useful resources
-command! -nargs=0 Resources :e ~/Desktop/Projects/Resources.md
+command! -nargs=0 Resources :e ~/Desktop/Projects/Notes/Resources.md
 " Hacking
-command! -nargs=0 Hacking :e ~/Desktop/Projects/Hacking.md
+command! -nargs=0 Hacking :e ~/Desktop/Projects/Notes/Hacking.md
 
 " SECTION: Autocommands
 
