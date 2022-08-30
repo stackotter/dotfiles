@@ -26,7 +26,7 @@ Plug 'keith/swift.vim'
 " Show vim diff next to line numbers
 Plug 'airblade/vim-gitgutter'
 " Nicer behaviour for brackets and quotes
-Plug 'windwp/nvim-autopairs'
+" Plug 'windwp/nvim-autopairs'
 " Markdown
 Plug 'godlygeek/tabular'
 Plug 'preservim/vim-markdown'
@@ -40,7 +40,7 @@ if has("nvim")
   Plug 'kyazdani42/nvim-web-devicons'
   Plug 'kyazdani42/nvim-tree.lua'
   " Language servers
-  Plug 'neoclide/coc.nvim', { 'branch': 'master' }
+  Plug 'neoclide/coc.nvim', { 'branch': 'release' }
   " Fuzzy finder
   Plug 'nvim-lua/plenary.nvim'
   Plug 'nvim-telescope/telescope.nvim'
@@ -135,20 +135,26 @@ nnoremap <silent> <c-l> :wincmd l<CR>
 inoremap <silent> <c-l> <esc>:wincmd l<CR>
 tmap <silent> <c-l> <esc>:wincmd l<CR>
 
-" Cycle through completions with tab
-" If completion popup visible, go to next completion
-" If text from start of line to cursor is whitespace, insert tab
-" Otherwise, refresh completions
-inoremap <silent><expr> <TAB>
-  \ pumvisible() ? "\<C-n>" :
-  \ <SID>CheckBackspace() ? "\<TAB>" :
-  \ coc#refresh()
-" Cycle through completions backwards with shift tab
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
 " SECTION: Nvim-only mappings
 
 if has("nvim")
+  " Confirm completion
+  inoremap <expr> <cr> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
+
+  " Next completion or trigger completion
+  function! CheckBackspace() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~# '\s'
+  endfunction
+  inoremap <silent><expr> <Tab>
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
+      \ coc#refresh()
+
+  " Previous completion
+  inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+
+
   " Previous diagnostic
   nnoremap <silent> [g <Plug>(coc-diagnostic-prev)
   " Next diagnostic
@@ -213,8 +219,6 @@ command! -nargs=0 Hacking :e ~/Desktop/Projects/Hacking.md
 
 " SECTION: Autocommands
 
-" Disable autopairs for double quotes in vimrc
-autocmd Filetype vim let b:AutoPairs = { "(": ")", "{": "}", "[": "]", "'": "'" }
 " Metal filetype
 autocmd BufNewFile,BufRead *.metal set ft=metal
 
@@ -276,18 +280,6 @@ if has("nvim")
       enable = true,
       additional_vim_regex_highlighting = false,
     },
-  }
-EOF
-
-  " Autopairs
-  lua << EOF
-  local npairs = require'nvim-autopairs'
-  local Rule = require'nvim-autopairs.rule'
-  local ts_conds = require'nvim-autopairs.ts-conds'
-
-  -- Use treesitter for autopairs
-  npairs.setup {
-    check_ts = true
   }
 EOF
 
