@@ -204,9 +204,9 @@ if has("nvim")
   " Restart coc
   nnoremap <leader>rs <cmd>CocRestart<cr><cr>
   " Coc action
-  nnoremap <leader>ac <cmd>CocAction<cr>
+  nnoremap <leader>ac <Plug>(coc-codeaction)<cr>
   " Coc fix
-  nnoremap <leader>fi <cmd>CocFix<cr>
+  nnoremap <leader>fi <Plug>(coc-fix-current)<cr>
   " Coc rename
   nnoremap <leader>rn <Plug>(coc-rename)
   " Coc format
@@ -359,7 +359,7 @@ if has("nvim")
     lua << EOF
     local lib = require('nvim-tree.lib')
     local node = lib.get_node_at_cursor()
-    local trash_cmd = "rmtrash "
+    local trash_cmd = "trash "
 
     local function get_user_input_char()
     	local c = vim.fn.getchar()
