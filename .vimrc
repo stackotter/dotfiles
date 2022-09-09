@@ -62,10 +62,12 @@ call plug#end()
 
 " SECTION: Settings
 
-" Theme
-colorscheme palenight
 " Syntax highlighting
 syntax on
+" Full colours
+set t_Co=256
+" Theme
+colorscheme palenight
 " Autowrap comments at 100 characters
 set formatoptions-=t
 set formatoptions+=cr
@@ -84,8 +86,6 @@ set hlsearch
 set incsearch
 " Link clipboard to system clipboard
 set clipboard=unnamedplus
-" Full colours
-set t_Co=256
 " Mouse support
 set mouse=a
 " Disable backup files
@@ -106,7 +106,7 @@ set sessionoptions+=terminal,folds,blank,help,winsize,localoptions,tabpages
 if has("nvim")
   set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
   " Fix bad completion menu fg colour"
-  hi CocMenuSel ctermfg=237
+  hi CocMenuSel ctermfg=237 ctermbg=39
 endif
 
 " SECTION: Mappings
