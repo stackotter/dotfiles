@@ -12,7 +12,7 @@ call plug#begin()
 " Color theme
 Plug 'drewtempelmeyer/palenight.vim'
 " Syntax checking
-Plug 'vim-syntastic/syntastic'
+" Plug 'vim-syntastic/syntastic'
 " Statusline
 Plug 'itchyny/lightline.vim'
 " Auto-detect indentation setting of files
@@ -101,6 +101,10 @@ set ruler
 set number
 " Additional session saving options
 set sessionoptions+=terminal,folds,blank,help,winsize,localoptions,tabpages
+
+" Disable stupid SQL completion plugin
+let g:loaded_sql_completion = 0
+let g:omni_sql_no_default_maps = 1
 
 " Add coc statusline
 if has("nvim")
@@ -211,6 +215,8 @@ if has("nvim")
   nnoremap <leader>rn <Plug>(coc-rename)
   " Coc format
   nnoremap <leader>fo <Plug>(coc-format)
+
+  nnoremap <leader>gr <Plug>(coc-references)
 endif
 
 " SECTION: Commands

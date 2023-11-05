@@ -44,10 +44,10 @@ source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 eval "$(starship init zsh)"
 
 # create del alias
-alias del="rmtrash"
+alias del="trash"
 
 # virtualenv
-source /usr/local/bin/virtualenvwrapper.sh
+source /usr/local/bin/virtualenvwrapper.sh 2>/dev/null || /opt/homebrew/bin/virtualenvwrapper.sh
 
 # thefuck
 eval $(thefuck --alias)
