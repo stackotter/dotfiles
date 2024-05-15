@@ -4,3 +4,6 @@
 [submodule ".zsh/zsh-manydots-magic"]
 	path = .zsh/zsh-manydots-magic
 	url = https://github.com/knu/zsh-manydots-magic
+[submodule ".config/kitty/kitty_search"]
+	path = .config/kitty/kitty_search
+	url = https://github.com/trygveaa/kitty-kitten-search

@@ -1,5 +1,4 @@
-format = """
-$username\
+format = """$username\
 $hostname\
 $directory\
 $git_branch\
