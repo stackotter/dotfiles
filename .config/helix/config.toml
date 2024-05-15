@@ -1,0 +1,31 @@
+theme = "gruvbox"
+
+[keys.normal]
+"C-r" = [":reflow 80"]
+"C-n" = [":reload"]
+"C-h" = ["jump_view_left"]
+"C-j" = ["jump_view_down"]
+"C-k" = ["jump_view_up"]
+"C-l" = ["jump_view_right"]
+
+[keys.insert]
+"C-f" = ["normal_mode"]
+
+[keys.select]
+"C-f" = ["normal_mode"]
+"C-r" = [":reflow 80"]
+
+[editor]
+line-number = "relative"
+mouse = true
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.file-picker]
+hidden = false
+
+[editor.whitespace.render]
+tab = "all"

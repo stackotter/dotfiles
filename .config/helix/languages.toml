@@ -1,0 +1,65 @@
+[[language]]
+name = "swift"
+auto-format = true
+formatter = { command = "swift-format", args = ["format", "--configuration", ".swift-format"] }
+
+[[language]]
+name = "python"
+auto-format = true
+
+[[language]]
+name = "svelte"
+auto-format = true
+formatter = { command = "prettier", args = ["--plugin", "prettier-plugin-svelte", "--parser", "svelte"] }
+
+[[language]]
+name = "typescript"
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "typescript"] }
+
+[[language]]
+name = "javascript"
+auto-format = false
+formatter = { command = "prettier", args = ["--parser", "babel"] }
+
+[[language]]
+name = "css"
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "css"] }
+
+[[language]]
+name = "typst"
+scope = "source.typst"
+injection-regex = "^typ(st)?$"
+file-types = ["typ"]
+comment-token = "//"
+indent = { tab-width = 2, unit = "  " }
+roots = []
+language-servers = [ "typst-lsp" ]
+
+[[language]]
+name = "cpp"
+file-types = ["cpp", "metal"]
+
+[[language]]
+name = "c"
+file-types = ["c", "h"]
+indent = { tab-width = 8, unit = "        " }
+
+[language.auto-pairs]
+'(' = ')'
+'{' = '}'
+'[' = ']'
+'"' = '"'
+'`' = '`'
+'$' = '$'
+
+[language-server.rust-analyzer.config]
+checkOnSave.command = "clippy"
+
+[language-server.typst-lsp]
+command = "typst-lsp"
+
+[[grammar]]
+name = "typst"
+source = { path = "/Users/stackotter/.config/helix/tree-sitter-typst" }
