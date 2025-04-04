@@ -1,4 +1,4 @@
-theme = "gruvbox"
+theme = "kanabox_default"
 
 [keys.normal]
 "C-r" = [":reflow 80"]
@@ -18,6 +18,11 @@ theme = "gruvbox"
 [editor]
 line-number = "relative"
 mouse = true
+idle-timeout = 50
+completion-timeout = 50
+soft-wrap.enable = true
+text-width = 100
+soft-wrap.wrap-at-text-width = true
 
 [editor.cursor-shape]
 insert = "bar"

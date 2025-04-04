@@ -2,10 +2,19 @@
 name = "swift"
 auto-format = true
 formatter = { command = "swift-format", args = ["format", "--configuration", ".swift-format"] }
+indent = { tab-width = 4, unit = "    " }
 
 [[language]]
 name = "python"
-auto-format = true
+auto-format = false
+
+[language-server.pylsp.config.pylsp]
+plugins.pyls_mypy.enabled = true
+plugins.pyls_mypy.live_mode = true
+plugins.flake8.maxLineLength = 300
+plugins.flake8.ignore = ["E302", "E305"]
+plugins.pycodestyle.maxLineLength = 300
+plugins.pycodestyle.ignore = ["E302", "E305"]
 
 [[language]]
 name = "svelte"
@@ -37,6 +46,21 @@ indent = { tab-width = 2, unit = "  " }
 roots = []
 language-servers = [ "typst-lsp" ]
 
+[[grammar]]
+name = "typst"
+source = { git = "https://github.com/uben0/tree-sitter-typst", rev = "e35aa22395fdde82bbc4b5700c324ce346dfc9e5" }
+
+[[language]]
+name = "dafny"
+scope = "source.dafny"
+file-types = ["dfy"]
+language-servers = [ "dafny-ls" ]
+grammar = "rust"
+
+[language-server.dafny-ls]
+command = "dafny"
+args = [ "server" ]
+
 [[language]]
 name = "cpp"
 file-types = ["cpp", "metal"]
@@ -45,6 +69,7 @@ file-types = ["cpp", "metal"]
 name = "c"
 file-types = ["c", "h"]
 indent = { tab-width = 8, unit = "        " }
+language-servers = [ "sourcekit-lsp" ]
 
 [language.auto-pairs]
 '(' = ')'
@@ -59,7 +84,3 @@ checkOnSave.command = "clippy"
 
 [language-server.typst-lsp]
 command = "typst-lsp"
-
-[[grammar]]
-name = "typst"
-source = { path = "/Users/stackotter/.config/helix/tree-sitter-typst" }
